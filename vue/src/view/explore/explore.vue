@@ -8,11 +8,10 @@
             <p class="explore_title">EXPLORE</p>
           </v-col>
           <v-col cols="12" xl="3" lg="3" md="4" sm="6" class="pa-2">
-            <v-text-field dense label="Find desired data" append-icon="mdi-magnify" rounded outlined></v-text-field>
+            <v-text-field background-color="white" dense label="Find desired data" append-icon="mdi-magnify" rounded outlined></v-text-field>
           </v-col>
         </v-row>
       </div>
-        
         <div class="explore_title_wrapper">
           <img class="explore_img" src="@/assets/explore.svg" alt="">
             <div class="explore_subtitle_wrapper">
@@ -43,7 +42,7 @@ export default {
     return {
       categoryList: ['Employee', 'User', 'Company', 'Inventory', 'Employee', 'User', 'Company', 'Inventory', 'Employee', 'User', 'Company', 'Inventory', 'Employee', 'User', 'Company', 'Inventory', 'Employee', 'User', 'Company', 'Inventory']
     }
-  }  
+  }
 }
 </script>
 <style scoped>

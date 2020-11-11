@@ -19,7 +19,7 @@
         <v-btn :disabled="disableGenerateButton" depressed @click="addStruct" class="button_generate" rounded color="success">Generate Data</v-btn>
       </div>
     </div>
-    <div class="json_factory_details">
+    <div class="json_factory_details" v-if="$store.getters.resolutionOfScreenInCurrentState.width > 1264">
         <img class="json_factory_logo" src="@/assets/json_factory.svg" />
     </div>
   </div>

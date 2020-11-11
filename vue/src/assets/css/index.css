@@ -160,6 +160,7 @@ pre  {
   .c-container{
     display: block !important;
   }
+  
 }
 @media screen and (max-width: 864px) {
   .json_add_wrapper{
@@ -167,6 +168,7 @@ pre  {
   }
   .json_factory_details {
     width: 100% !important;
+    display: none;
   }
   .c-container{
     display: block !important;
@@ -177,22 +179,24 @@ pre  {
   height: calc(100vh - 64px);
   display: inline-flex;
   align-items: center;
+  overflow: scroll;
   justify-content: center;
 }
 .json_add_wrapper {
   width: 50%;
   position: relative;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 78px);
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 500px;
 }
 .json_factory_details {
   width: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 78px);
 }
 .animation_wrapper {
   height: 80%;
