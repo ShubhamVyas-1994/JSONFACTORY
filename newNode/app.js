@@ -25,7 +25,7 @@ app.use(express.static('public'));
 // Logger Middleware
 app.use(morgan('dev'));
 
-let firstVersionApi = require('./routes/v1/api/route');
+let firstVersionApi = require('./src/v1/route');
 app.use('/api/v1', firstVersionApi)
 
 

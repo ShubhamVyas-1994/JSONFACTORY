@@ -42,8 +42,6 @@ GenerateData.prototype.getDate = function (from, to) {
   } else if (from === '' && to !== '') {
     return new Date(this.getNumber(new Date(CDate.subtractDaysToDate(to, 200)).getTime(), new Date(to).getTime())).toUTCString()
   } else {
-    console.log(new Date(CDate.subtractDaysToDate(new Date(), 100)).getTime())
-    console.log(new Date(CDate.addDaysToDate(new Date(), 100)).getTime())
     return new Date(this.getNumber(new Date(CDate.subtractDaysToDate(new Date(), 100)).getTime(), new Date(CDate.addDaysToDate(new Date(), 100)).getTime()))
   }
 }

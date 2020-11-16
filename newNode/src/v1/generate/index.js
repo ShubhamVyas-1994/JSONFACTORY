@@ -1,5 +1,5 @@
 let router = require('express').Router();
-var pool = require('../../../../db');
+var pool = require('../../db/db');
 
 import DataGenerator from './datamodel'
 

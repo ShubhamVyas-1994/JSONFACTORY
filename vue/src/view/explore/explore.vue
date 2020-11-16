@@ -7,7 +7,7 @@
           <v-col cols="12" xl="9" lg="9" sm="6" md="8" class="pa-2">
             <p class="explore_title">EXPLORE</p>
           </v-col>
-          <v-col cols="12" xl="3" lg="3" md="4" sm="6" class="pa-2">
+          <v-col cols="12" xl="2" lg="2" md="4" sm="6" class="pa-2">
             <v-text-field background-color="white" dense label="Find desired data" append-icon="mdi-magnify" rounded outlined></v-text-field>
           </v-col>
         </v-row>
@@ -23,15 +23,13 @@
       </v-col>
     </v-row>
     <v-divider></v-divider>
-    <v-row>
-      <v-col cols="12" class="category_wrapper">
-        <div class="category_cards" v-for="(data, index) in categoryList" :key="index">
-            <v-card style="border-radius:10px" flat color="white" height="100">
-              <v-card-text>
-                {{data}}
-              </v-card-text>
-            </v-card>
-          </div>
+    <v-row class="pa-2">
+      <v-col cols="12" xl="2" lg="3" md="4" class="pa-2" v-for="(data, index) in categoryList" :key="index">
+       <v-card style="border-radius:10px" flat color="white" height="70">
+          <v-card-text>
+            {{data}}
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -50,10 +48,7 @@ export default {
   width: 100%;
   display: contents;
 }
-.category_cards {
-  width: 300px;
-  padding: 6px;
-}
+
 .available_title {
   font-size: large;
   font-family: 'Montserrat-Regular';

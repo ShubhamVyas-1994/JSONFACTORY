@@ -1,4 +1,4 @@
-import config from './config';
+import config from '../../config';
 const { Pool, Client } = require('pg')
 
 const { POSTGRES_URI } = config;
