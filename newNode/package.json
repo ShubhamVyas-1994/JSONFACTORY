@@ -16,7 +16,8 @@
     "express": "^4.17.1",
     "mongoose": "^5.10.7",
     "multer": "^1.4.2",
-    "pg": "^8.3.3"
+    "pg": "^8.3.3",
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",

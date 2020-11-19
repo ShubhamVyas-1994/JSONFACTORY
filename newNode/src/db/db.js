@@ -5,18 +5,13 @@ const { POSTGRES_URI } = config;
 
 const db = `${POSTGRES_URI}`;
 
-var client;
 // Sending client connect
-function connectToDatabase () {
+async function connectToDatabase () {
   const pool = new Pool({
     connectionString: db,
   })
-  try {
-    pool.connect()
-    return pool;
-  } catch (error) {
-    console.log(error)
-  }
+  const client = await pool.connect();
+  return client;
 };
 
-module.exports = connectToDatabase();
+module.exports = connectToDatabase;

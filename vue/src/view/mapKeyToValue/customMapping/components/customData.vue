@@ -66,7 +66,7 @@ export default {
 </script>
 <style scoped>
 .card_title {
-  font-family: 'Bitter-SemiBold' !important;
+  font-family: 'Montserrat-Regular' !important;
   font-size: large;
 }
 </style>

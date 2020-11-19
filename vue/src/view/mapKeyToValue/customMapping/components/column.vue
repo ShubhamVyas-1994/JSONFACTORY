@@ -1,105 +1,105 @@
 <template>
   <div>
     <div v-for="(value, key, index) in objectToIterate" :key="index" class="table_row">
-      <v-card class="column_card" outlined>
-        <div class="column_key">
-          <p class="subtitle">{{value.value === 'text' ? 'Text' : value.value === 'number' ? 'Number' : value.value === 'float' ? 'Float' : value.value === 'object' ? '{}' : value.value === 'array' ? '[...]' : value.value === 'arrayOfObjects' ? '[{...}]' : value.value === 'boolean' ? 'Boolean' : 'Date Time'}}</p>
-          <p>{{key}}</p>
-          <v-icon class="column_key_icon" v-if="value.value === 'arrayOfObjects' || value.value === 'object'">mdi mdi-arrow-down-bold-outline</v-icon>
-        </div>
-        <div class="column_map_to">
-          <v-autocomplete
-          v-if="value.value === 'text' || value.value === 'date_time' || value.value === 'array'"
-            v-model="value.mapTo"
-            label="Map"
-            :items="categoryList"
-            dense
-            outlined
-            item-text="categoryName"
-            @input="checkForMapping(value)"
-            autocomplete="new-password"
-            :rules="[v => !!v || '']"
-            :name="$store.getters.uniqueNameForTextField"
-            item-value="mapTo">
-          </v-autocomplete>
-          <v-checkbox class="ma-0" v-if="value.value === 'number'" label="Unique Id" v-model="value.isUniqueId"></v-checkbox>
-          <div v-if="value.value === 'boolean'">
-            <p>True/ False</p>
+        <v-card class="column_card" outlined>
+          <div class="column_key">
+            <p class="subtitle">{{value.value === 'text' ? 'Text' : value.value === 'number' ? 'Number' : value.value === 'float' ? 'Float' : value.value === 'object' ? '{}' : value.value === 'array' ? '[...]' : value.value === 'arrayOfObjects' ? '[{...}]' : value.value === 'boolean' ? 'Boolean' : 'Date Time'}}</p>
+            <p>{{key}}</p>
+            <v-icon class="column_key_icon" v-if="value.value === 'arrayOfObjects' || value.value === 'object'">mdi mdi-arrow-down-bold-outline</v-icon>
           </div>
-          <v-text-field type="number" label="Length" v-model.number="value.len" v-if="value.value === 'arrayOfObjects'" @blur="value.len = value.len > 10 ? 10 : value.len" outlined dense></v-text-field>
-        </div>
-        <div class="column_additional_info">
-          <v-text-field class="addition_info_text_field" label="Code" v-model="value.prefix" outlined dense v-if="value.mapTo === 'phone_number' && value.value === 'text'"></v-text-field>
-          <v-text-field
-            label="Min"
-            type="number"
-            dense
-            class="addition_info_text_field"
-            outlined
-            v-if="(value.value === 'number' || value.value === 'float') && value.isUniqueId === false"
-            v-model.number="value.min"
-            @blur="checkForMinMaxValidation(value)"
-          ></v-text-field>
-          <v-text-field
-            label="Max"
-            type="number"
-            dense
-            outlined
-            class="addition_info_text_field"
-            v-if="(value.value === 'number' || value.value === 'float') && value.isUniqueId === false"
-            v-model.number="value.max"
-            @blur="checkForMinMaxValidation(value)"
-          ></v-text-field>
-          <v-menu
-            v-model="value.fromModal"
-            transition="scale-transition"
-            offset-y
-            :close-on-content-click="false"
-            v-if="value.value === 'date_time'"
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="value.from"
-                label="From"
-                class="addition_info_text_field"
-                readonly
-                outlined
-                dense
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-              <datetimepicker @closeMenu="() => value.fromModal = false" v-model="value.from" :maxDate="value.to"/>
-          </v-menu>
-          <v-menu
-            v-model="value.toModal"
-            transition="scale-transition"
-            offset-y
-            :close-on-content-click="false"
-            v-if="value.value === 'date_time'"
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="value.to"
-                label="To"
-                readonly
-                outlined
-                dense
-                class="addition_info_text_field"
-                v-bind="attrs"
-                v-on="on"
-              ></v-text-field>
-            </template>
-              <datetimepicker @closeMenu="value.toModal = false" v-model="value.to" :minDate="value.from" />
-          </v-menu>
-        </div>
-        <v-btn x-small fab v-if="value.value === 'text'" class="edit_dataToMap__icon" depressed color="white" @click="customizeDataObject = value;customizeData = true">
-            <v-icon
-              small>mdi mdi-pencil</v-icon>
-          </v-btn>
-      </v-card>
+          <div class="column_map_to">
+            <v-autocomplete
+            v-if="value.value === 'text' || value.value === 'date_time' || value.value === 'array'"
+              v-model="value.mapTo"
+              label="Map"
+              :items="categoryList"
+              dense
+              outlined
+              item-text="categoryName"
+              @input="checkForMapping(value)"
+              autocomplete="new-password"
+              :rules="[v => !!v || '']"
+              :name="$store.getters.uniqueNameForTextField"
+              item-value="mapTo">
+            </v-autocomplete>
+            <v-checkbox class="ma-0" v-if="value.value === 'number'" label="Unique Id" v-model="value.isUniqueId"></v-checkbox>
+            <div v-if="value.value === 'boolean'">
+              <p>True/ False</p>
+            </div>
+            <v-text-field type="number" label="Length" v-model.number="value.len" v-if="value.value === 'arrayOfObjects'" @blur="value.len = value.len > 10 ? 10 : value.len" outlined dense></v-text-field>
+          </div>
+          <div class="column_additional_info">
+            <v-text-field class="addition_info_text_field" label="Code" v-model="value.prefix" outlined dense v-if="value.mapTo === 'phone_number' && value.value === 'text'"></v-text-field>
+            <v-text-field
+              label="Min"
+              type="number"
+              dense
+              class="addition_info_text_field"
+              outlined
+              v-if="(value.value === 'number' || value.value === 'float') && value.isUniqueId === false"
+              v-model.number="value.min"
+              @blur="checkForMinMaxValidation(value)"
+            ></v-text-field>
+            <v-text-field
+              label="Max"
+              type="number"
+              dense
+              outlined
+              class="addition_info_text_field"
+              v-if="(value.value === 'number' || value.value === 'float') && value.isUniqueId === false"
+              v-model.number="value.max"
+              @blur="checkForMinMaxValidation(value)"
+            ></v-text-field>
+            <v-menu
+              v-model="value.fromModal"
+              transition="scale-transition"
+              offset-y
+              :close-on-content-click="false"
+              v-if="value.value === 'date_time'"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="value.from"
+                  label="From"
+                  class="addition_info_text_field"
+                  readonly
+                  outlined
+                  dense
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+                <datetimepicker @closeMenu="() => value.fromModal = false" v-model="value.from" :maxDate="value.to"/>
+            </v-menu>
+            <v-menu
+              v-model="value.toModal"
+              transition="scale-transition"
+              offset-y
+              :close-on-content-click="false"
+              v-if="value.value === 'date_time'"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="value.to"
+                  label="To"
+                  readonly
+                  outlined
+                  dense
+                  class="addition_info_text_field"
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+                <datetimepicker @closeMenu="value.toModal = false" v-model="value.to" :minDate="value.from" />
+            </v-menu>
+          </div>
+          <v-btn x-small fab v-if="value.value === 'text'" class="edit_dataToMap__icon" depressed color="white" @click="customizeDataObject = value;customizeData = true">
+              <v-icon
+                small>mdi mdi-pencil</v-icon>
+            </v-btn>
+        </v-card>
       <div style="display:block;width:100%" v-if="value.value === 'array' || value.value === 'object' || value.value === 'arrayOfObjects'">
         <row-iterator :categoryList="categoryList" :objectToIterate="value.value === 'object' ? value.children : value.children[0]" v-if="value.value !== 'array'" />
       </div>
@@ -161,6 +161,9 @@ export default {
   width: 100% !important;
   border-top: none !important;
   border-radius: 0px !important;
+}
+.column_card:hover{
+  background: #fbfbfb;
 }
 .column_type {
   width: 7em;

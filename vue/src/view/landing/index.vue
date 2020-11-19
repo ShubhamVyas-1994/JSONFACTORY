@@ -2,21 +2,27 @@
   <div class="c-container">
     <div class="json_add_wrapper">
       <div class="json_textbox_wrapper">
-        <div class="json_textbox" :style="!showTextarea ? '' : 'display:none'" @click="showTextarea = true">
-          <p class="mb-4">Enter your JSON structure here...</p>
-          <pre id="json_pre"></pre>
-        </div>
-        <textarea
-          @input="disableGenerateButton = false"
-          v-model="enteredJson"
-          @blur="checkIfAnyJsonIsEntered"
-          v-if="showTextarea"
-          id="json_textarea"
-          placeholder="Enter your JSON structure here..."
-          type="text"
-          class="json_textbox"></textarea>
-        <p v-if="jsonError" class="error--text my-1">Entered JSON is invalid</p>
-        <v-btn :disabled="disableGenerateButton" depressed @click="addStruct" class="button_generate" rounded color="success">Generate Data</v-btn>
+        <v-row>
+          <v-col cols="12" style="max-height: 550px">
+            <div class="json_textbox" :style="!showTextarea ? '' : 'display:none'" @click="showTextarea = true">
+              <p class="mb-4">Enter your JSON structure here...</p>
+              <pre id="json_pre"></pre>
+            </div>
+            <textarea
+              @input="disableGenerateButton = false"
+              v-model="enteredJson"
+              @blur="checkIfAnyJsonIsEntered"
+              v-if="showTextarea"
+              id="json_textarea"
+              placeholder="Enter your JSON structure here..."
+              type="text"
+              class="json_textbox"></textarea>
+              <p v-if="jsonError" class="error--text my-1">Entered JSON is invalid</p>
+          </v-col>
+          <v-col cols="12" class="pt-5 text-right">
+              <v-btn :disabled="disableGenerateButton" depressed @click="addStruct" class="button_generate" rounded color="primary">Customize</v-btn>
+          </v-col>
+        </v-row>
       </div>
     </div>
     <div class="json_factory_details" v-if="$store.getters.resolutionOfScreenInCurrentState.width > 1264">
@@ -68,6 +74,7 @@ export default {
     }
   },
   mounted () {
+    console.log(JSON.stringify(this.dummyObject))
     document.getElementById('json_pre').innerHTML = this.syntaxHighlight(JSON.stringify(this.dummyObject, null, 2))
   },
   methods: {
@@ -75,6 +82,7 @@ export default {
       if (this.enteredJson === '') {
         this.showTextarea = false
         this.jsonError = false
+        this.disableGenerateButton = true
       }
     },
     addStruct () {
@@ -99,11 +107,6 @@ export default {
 <style scoped>
 #json_pre{
   overflow: hidden;
-}
-.button_generate{
-  position: absolute;
-  bottom: 9%;
-  right: 10%;
 }
 ::-webkit-scrollbar{
   width: 0px;

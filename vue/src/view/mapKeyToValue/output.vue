@@ -5,7 +5,7 @@
         <div class="output_options">
           <v-row>
             <v-col cols="4" class="output_header">
-              <p class="output_title">Generated Data</p>
+              <p class="output_title">GENERATED DATA</p>
             </v-col>
             <v-col cols="8" class="pa-1 text-right">
               <v-menu
@@ -80,7 +80,7 @@
       <v-col cols="12" xl="5" lg="5" class="pa-2">
         <div class="added_json">
           <div class="added_json_header">
-            Input JSON
+            INPUT JSON
           </div>
           <div class="added_json_pre">
             <pre id="added_json"></pre>
@@ -261,7 +261,6 @@ export default {
   font-family: 'Montserrat-Regular';
   font-weight: bold;
   font-size: 16px;
-  padding-left: 12px;
 }
 .output_header {
   display: flex;

@@ -3,13 +3,42 @@
     <v-app-bar app flat color="white" clipped-right>
       <v-toolbar-title class="toolbar__title">JSONFACTORY</v-toolbar-title>
       <v-spacer></v-spacer>
-      <div>
+      <div v-if="$store.getters.resolutionOfScreenInCurrentState.width > 864">
         <v-btn light text :color="$route.name === 'Home' ? 'primary' : '#eee'" @click="$router.push({name: 'Home'})" class="mx-1 black--text font-weigth-bold buttons_to_hover">Home</v-btn>
-        <v-btn light text :color="$route.name === 'Explore' ? 'primary' : '#eee'" @click="$router.push({name: 'Explore'})" class="mx-1 black--text font-weigth-bold buttons_to_hover">Explore</v-btn>
+        <!-- <v-btn light text :color="$route.name === 'Help' ? 'primary' : '#eee'" @click="$router.push({name: 'Help'})" class="mx-1 black--text font-weigth-bold buttons_to_hover">Help</v-btn> -->
         <v-btn light text :color="$route.name === 'About' ? 'primary' : '#eee'" @click="$router.push({name: 'About'})" class="mx-1 black--text font-weigth-bold buttons_to_hover">About</v-btn>
-        <v-btn light text :color="$route.name === 'Lgoin' ? 'primary' : '#eee'" class="mx-1 black--text font-weigth-bold buttons_to_hover">Login</v-btn>
+        <!-- <v-btn @click="$router.push({name: 'Login'})" light text :color="$route.name === 'Login' ? 'primary' : '#eee'" class="mx-1 black--text font-weigth-bold buttons_to_hover">Login</v-btn> -->
+        <v-btn @click="$router.push({name: 'Feedback'})" light text :color="$route.name === 'Review' ? 'primary' : '#eee'" class="mx-1 black--text font-weigth-bold buttons_to_hover">Feedback</v-btn>
       </div>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-else></v-app-bar-nav-icon>
     </v-app-bar>
+    <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      right
+      temporary
+    >
+      <v-list
+        nav
+      >
+        <v-list-item-group
+          v-model="group"
+          active-class="primary lighten-5"
+        >
+          <v-list-item @click="$router.push({name: 'Home'})">
+            <v-list-item-title>Home</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="$router.push({name: 'About'})">
+            <v-list-item-title>About</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="$router.push({name: 'Feedback'})">
+            <v-list-item-title>Feedback</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
     <v-main v-resize="resizeWindowHandler" class="main_container">
       <section style="overflow:hidden">
         <transition name="slide" mode="out-in">
@@ -25,7 +54,9 @@ export default {
   mixins: [deboucneMixin],
   data () {
     return {
-      debounceMethod: function () {}
+      debounceMethod: function () {},
+      group: 0,
+      drawer: false
     }
   },
   mounted () {

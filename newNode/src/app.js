@@ -7,6 +7,7 @@ var multer = require('multer');
 var upload = multer();
 // Taking care of cors policy
 import cors from 'cors';
+import router from './v1/admin/category/category';
 // CORS Middleware
 app.use(cors());
 
@@ -25,8 +26,7 @@ app.use(express.static('public'));
 // Logger Middleware
 app.use(morgan('dev'));
 
-let firstVersionApi = require('./src/v1/route');
+let firstVersionApi = require('./v1/route');
 app.use('/api/v1', firstVersionApi)
-
 
 export default app;

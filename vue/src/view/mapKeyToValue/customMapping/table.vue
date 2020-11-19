@@ -4,7 +4,7 @@
         <div class="table_row_header pa-3">
           <p class="table_card_title">Customize values</p>
           <v-spacer></v-spacer>
-          <v-btn depressed color="primary" rounded small @click="getOutput">
+          <v-btn depressed color="primary" rounded @click="getOutput">
             Generate Data
           </v-btn>
         </div>
@@ -22,10 +22,9 @@
           </v-col>
         </v-row>
         <div :style="`height:${$store.getters.resolutionOfScreenInCurrentState.height - 176}px;overflow-y:scroll`">
-          <v-card outlined class="category_cards" v-for="(data, index) in searchForCategoryList" :key="index">
-            <p class="card_title primary--text">{{data.categoryName}} </p>
-            <p><span class="grey--text">value:</span> {{data.mapTo}}</p>
-            <p><span class="grey--text">ex:</span> Lorem</p>
+          <v-card :elevation="hover ? 6 : 0" :outlined="!hover" class="category_cards" v-for="(data, index) in searchForCategoryList" :key="index">
+            <p class="card_title primary--text">{{data.categoryName}} <span class="grey--text">({{data.mapTo}})</span></p>
+            <v-chip small class="mr-1 my-1" v-for="(examples, eIndex) in data.example.split(',')" :key="eIndex">{{examples}}</v-chip>
           </v-card>
           <div >
           </div>
@@ -63,6 +62,9 @@ export default {
   methods: {
     async getCategoryList () {
       JsonFactory.GetCategoryList().then(response => {
+        // for (let i = 0; i < response.data.length; i++) {
+        //   response.data[i].categoryExample = response.data[i].example.split(',')
+        // }
         this.categoryList = response.data
         this.searchForCategoryList = response.data
         this.extractDataFromAddedJson()
@@ -193,10 +195,11 @@ export default {
 }
 .table_rows {
   width: 100%;
-  max-height: calc(100vh - 154px);
+  height: calc(100vh - 158px);
+  background: white;
   border-radius: 0px 0px 10px 10px;
   overflow: scroll;
-   white-space: nowrap;
+  white-space: nowrap;
 }
 @media only screen and (max-width: 1264px) {
   .table_card {
@@ -226,6 +229,10 @@ export default {
   width: 100%;
   padding: 10px;
   border-radius: 0px !important;
+  border-top: none;
+}
+.category_cards:hover{
+  background: #fbfbfb;
 }
 .card_title{
   font-family: 'Montserrat-Regular';

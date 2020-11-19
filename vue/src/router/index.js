@@ -21,11 +21,11 @@ export default new Router({
           name: 'About',
           component: () => import('@/view/about/about.vue')
         },
-        {
-          path: '/explore',
-          name: 'Explore',
-          component: () => import('@/view/explore/explore.vue')
-        },
+        // {
+        //   path: '/explore',
+        //   name: 'Explore',
+        //   component: () => import('@/view/explore/explore.vue')
+        // },
         {
           path: '/customize',
           name: 'CustomizeData',
@@ -35,6 +35,21 @@ export default new Router({
           path: '/output',
           name: 'OutputView',
           component: () => import('@/view/mapKeyToValue/output.vue')
+        },
+        // {
+        //   path: '/login',
+        //   name: 'Login',
+        //   component: () => import('@/view/auth/login.vue')
+        // },
+        // {
+        //   path: '/signup',
+        //   name: 'Signup',
+        //   component: () => import('@/view/auth/signup.vue')
+        // },
+        {
+          path: '/feedback',
+          name: 'Feedback',
+          component: () => import('@/view/suggestion/suggestion.vue')
         }
       ]
     }

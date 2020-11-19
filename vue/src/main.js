@@ -8,10 +8,13 @@ import '@mdi/font/css/materialdesignicons.css'
 import vuetify from '@/plugins/vuetify'
 import '@/assets/css/index.css'
 import store from './store/store'
+import { VueMaskDirective } from 'v-mask'
+import './filters/filter.js'
 
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
+Vue.directive('mask', VueMaskDirective)
 new Vue({
   el: '#app',
   router,

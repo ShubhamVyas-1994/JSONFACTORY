@@ -2,9 +2,9 @@ let router = require('express').Router();
 var pool = require('../../../db/db');
 
 router.get('/list', async (req, res) => {
-    try {
-      const data = await pool.query(`SELECT mapping_id, name, cat_id, map_to, table_name, is_table_present, is_active from mapping_table_list LEFT JOIN subcategory_details ON subcat_id = cat_id`);
-      pool.release
+  let client = await pool()
+  try {
+      const data = await client.query(`SELECT mapping_id, name, cat_id, map_to, table_name, is_table_present, is_active from mapping_table_list LEFT JOIN subcategory_details ON subcat_id = cat_id`);
       let responseData = []
       for (let i = 0; i < data.rows.length; i++) {
         responseData.push({
@@ -20,9 +20,10 @@ router.get('/list', async (req, res) => {
       res.send(JSON.stringify({status: 200, data: responseData}))
       return
     } catch (err) {
-      pool.release
       res.send(JSON.stringify({status: 201, data: null, message: err.toString()}))
       return
+    } finally {
+      client.release(true)
     }
 })
 
@@ -35,15 +36,16 @@ router.post('/add', async (req, res) => {
     } else {
       query = `INSERT INTO mapping_table_list(name, cat_id, is_active) VALUES ('${details.name}', ${details.categoryId}, ${details.isActive})`
     }
+    let client = await pool()
     try {
-      let data = await pool.query(query)
-      pool.release
+      let data = await client.query(query)
       res.send(JSON.stringify({status: 200, data: data, message: 'Data added succesfully'}))
       return
     } catch (error) {
-      pool.release
       res.send(JSON.stringify({status: 201, data: null, message: error.toString()}))
       return
+    } finally {
+      client.release(true)
     }
   } catch (error) {
     res.send(JSON.stringify({status: 201, data: null, message: error.toString()}))
