@@ -1,5 +1,5 @@
 let router = require('express').Router();
-var pool = require('../../../db/db');
+var pool = require('../../db/db');
 
 router.get('/list', async (req, res) => {
   let client = await pool()

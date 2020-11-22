@@ -36,6 +36,38 @@ router.post('/data', async (req, res) => {
   }
 })
 
+router.post('/uncustomized', async (req, res) => {
+  try {
+    let requiredData = JSON.parse(req.body.dataMapStructure)
+    if (requiredData !== undefined && requiredData !== null) {
+      // checking if we have to use db for data
+      let dataToGetFromTable = await filteringDataForTable(requiredData)
+      let dataToGenerate = await filterDataToGenerate(requiredData)
+      // creating response structure
+      let responseArray = []
+      // checking if table data is represent
+      // if not then custom looping will be applied
+      if (dataToGetFromTable.length > 0) {
+        try {
+          await getDataFromTable(dataToGetFromTable, dataToGenerate, responseArray, 100)
+        } catch (error) {
+          res.send(error.toString())
+        }
+      } else {
+        for (let i = 0; i < 500; i++) {
+          let x = await customLoopingToGetRequiredData(requiredData)
+          responseArray.push(x)
+        }
+      }
+      res.send(JSON.stringify({status: 200, data: responseArray}))
+    } else {
+      throw 'Undefined Data'
+    }
+  } catch (error) {
+    res.send(error.toString())
+    return
+  }
+})
 // Splitting data for getting query if no data to be taken from table then custom looping will be applied
 // For table
 async function filteringDataForTable (data) {

@@ -5,7 +5,7 @@ CDate.prototype.getDayDifference = function (from, to) {
 }
 
 CDate.prototype.addDaysToDate = function (date, daysToAdd) {
-  return new Date(new Date(date).setDate(new Date(date).getDate() + daysToAdd)).toUTCString()
+  return new Date(new Date(date).setDate(new Date(date).getDate() + daysToAdd)).toISOString()
 }
 CDate.prototype.subtractDaysToDate = function (date, daysToSubtract) {
   return new Date(new Date(date).setDate(new Date(date).getDate() - daysToSubtract)).toUTCString()

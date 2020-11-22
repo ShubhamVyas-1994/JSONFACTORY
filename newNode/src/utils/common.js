@@ -17,7 +17,7 @@ export async function generateAuthToken(userId) {
   let token = uuidv4();
   let client = await pool();
   try {
-    _ = await client.query(`INSERT INTO jf_user_auth_details(authtoken, jf_user_id, logged_in) VALUES ('${token}', ${userId}, '${new Date().toISOString()}')`)
+    await client.query(`INSERT INTO jf_user_auth_details(authtoken, jf_user_id, logged_in) VALUES ('${token}', ${userId}, '${new Date().toISOString()}')`)
   } catch (error) {
     throw error
   } finally {

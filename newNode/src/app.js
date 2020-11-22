@@ -7,7 +7,6 @@ var multer = require('multer');
 var upload = multer();
 // Taking care of cors policy
 import cors from 'cors';
-import router from './v1/admin/category/category';
 // CORS Middleware
 app.use(cors());
 

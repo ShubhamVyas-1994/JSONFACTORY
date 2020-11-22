@@ -5,8 +5,16 @@ import CDate from './cdate'
 var crypto = require('crypto');
 
 class DataGenerator {
-  constructor() { }
-
+  constructor() {
+    this.userIndex = 0
+    this.addressIndex = 0
+    this.currentIndex = 0
+  }
+  set resetIndex(index) {
+    this.currentIndex = index
+    this.userIndex = this.number(0, DataStore.userList.length)
+    this.addressIndex = this.number(0, DataStore.addressList.length)
+  }
   number(min, max) {
     let randomNumber = Math.random()
     if (max > 0 && min > 0) {
@@ -19,8 +27,9 @@ class DataGenerator {
       return Math.floor(randomNumber * 100)
     }
   }
-  get uniqueId() {
-    return Math.round(new Date().getTime() / 100000)
+  
+  get unique_id() {
+    return Math.round(new Date().getMilliseconds() * this.number(1, 100))
   }
   float(min, max) {
     let randomNumber = Math.random()
@@ -35,8 +44,8 @@ class DataGenerator {
     }
   }
   date_time(from, to) {
-    from = from.trim()
-    to = to.trim()
+    from = from === undefined ? '' : from.trim()
+    to = to === undefined ? '' : to.trim()
     if (from !== '' && to !== '') {
       return new Date(this.number(new Date(from).getTime(), new Date(to).getTime())).toUTCString()
     } else if (from !== '' && to === '') {
@@ -92,40 +101,43 @@ class DataGenerator {
     return DataStore.bloodGroupList[this.number(0, DataStore.bloodGroupList.length)]
   }
   get first_name() {
-    return DataStore.userList[this.number(0, DataStore.userList.length)].first_name
+    return DataStore.userList[this.userIndex].first_name
   }
   get user_name() {
-    return DataStore.userList[this.number(0, DataStore.userList.length)].user_name
+    return DataStore.userList[this.userIndex].user_name
   }
   get last_name() {
-    return DataStore.userList[this.number(0, DataStore.userList.length)].last_name
+    return DataStore.userList[this.userIndex].last_name
   }
   get middle_name() {
-    return DataStore.userList[this.number(0, DataStore.userList.length)].middle_name
+    return DataStore.userList[this.userIndex].middle_name
+  }
+  get email_address() {
+    return DataStore.userList[this.userIndex].email_address
   }
   get full_name() {
-    return DataStore.userList[this.number(0, DataStore.userList.length)].full_name
+    return DataStore.userList[this.userIndex].full_name
   }
   get address() {
-    return DataStore.addressList[this.number(0, DataStore.addressList.length)].full_address
+    return DataStore.addressList[this.addressIndex].full_address
   }
   get address_line1() {
-    return DataStore.addressList[this.number(0, DataStore.addressList.length)].address_line1
+    return DataStore.addressList[this.addressIndex].address_line1
   }
   get address_line2() {
-    return DataStore.addressList[this.number(0, DataStore.addressList.length)].address_line2
+    return DataStore.addressList[this.addressIndex].address_line2
   }
   get city() {
-    return DataStore.addressList[this.number(0, DataStore.addressList.length)].city
+    return DataStore.addressList[this.addressIndex].city
   }
   get state() {
-    return DataStore.addressList[this.number(0, DataStore.addressList.length)].state
+    return DataStore.addressList[this.addressIndex].state
   }
   get country() {
-    return DataStore.addressList[this.number(0, DataStore.addressList.length)].country
+    return DataStore.addressList[this.addressIndex].country
   }
   get zipcode() {
-    return DataStore.addressList[this.number(0, DataStore.addressList.length)].zipcode
+    return DataStore.addressList[this.addressIndex].zipcode
   }
   get unique_code() {
     return crypto.randomBytes(10).toString('hex')
@@ -163,4 +175,4 @@ class DataGenerator {
 }
 
 
-export default new DataGenerator()
+export default DataGenerator;
