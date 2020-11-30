@@ -5,7 +5,8 @@ import pool from '../../db/db';
 import {generateAuthToken} from '../../utils/common';
 import {sendEmail} from '../../utils/email';
 import CDate from '../generate/cdate';
-import {resendEmail} from './email';
+import {resendEmail, verifyEmail, returnHtmlForEmail} from './email';
+
 router.post('/login', async (request, res) => {
   let client = await pool();
   try {
@@ -31,7 +32,6 @@ router.post('/login', async (request, res) => {
   } catch (error) {
     responseWithError(error, res)
   } finally {
-    console.log('REturn Fired finally didnt run')
     client.release(true)
     return
   }
@@ -79,56 +79,9 @@ router.post('/signup', async (request, response) => {
   }
 })
 
-router.post('/verify/email', async (request, response) => {
-  try {
-    let token = request.body.token;
-    // getting client
-    let client = await pool();
-    try {
-      let userData = await client.query(`SELECT jf_user_id FROM verify_user_via_email WHERE token = '${token}'`)
-      if (userData.rows[0] === undefined) throw 'Invalid token'
-      
-     try {
-      await client.query(`UPDATE jf_user_details SET email_verified = true WHERE js_user_id = ${userData.rows[0].jf_user_id}`)
-      respondWithData(userData.rows[0].jg_user_id, 'Verified', response)
-      return
-     } catch (error) {
-       console.log(error)
-       throw error
-     }
-    } catch (error) {
-      throw error
-    } finally {
-      client.release(true)
-    }
-  } catch (error) {
-    responseWithError(error, response)
-    return
-  }
-})
+router.post('/verify/email', verifyEmail)
 
-router.post('/resent/email', resendEmail)
+router.post('/resend/email', resendEmail)
 
-function returnHtmlForEmail (token, email, date) {
-  return `
-  <body>
-    <div style="background:white;padding:50px;border:solid 1px #f4f4f4;width:500px;">
-      <div style="width: 100%;">
-        <p style="font-family: system-ui;font-size: 2rem;font-weight: medium;margin-top: 0px;color:rgb(13, 212, 169)">
-          Verify your email address
-        </p>
-        <p style="font-family: system-ui;font-size: 1rem;text-align: left;">
-          Thank you for using JSONFACTORY,
-          <br>
-          <br>
-          Please confirm that <b>${email}</b> is your e-mail address by clicking on the button below
-        </p>
-        <a href="http://localhost:8080/#/emailverified?from=signup&id=${email}&token=${token}" style="padding:15px;margin:40px 0px 0px;background:rgb(13, 212, 169);border: none;color: white;width:500px;display: block;text-align:center;text-decoration: none;font-size:large;">VERIFY</a>
-        <p style="font-family: system-ui;font-size: 1rem;text-align: left;">Valid till 48hrs</p>
-        </div>
-      </div>
-</body>
-  `
-}
 // export module
 module.exports = router;

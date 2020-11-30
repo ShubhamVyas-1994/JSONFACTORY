@@ -1,19 +1,28 @@
 let router = require('express').Router();
 var pool = require('../../db/db');
-import {responseWithError, respondWithData} from '../../utils/response';
-
+import { responseWithError, respondWithData } from '../../utils/response';
+import { getUserIdFromToken } from '../user/verification'
+import cdate from './cdate';
 import DataGenerator from './datamodel'
 
-var dataGenerator;
-
 router.post('/data', async (request, response) => {
-  dataGenerator = new DataGenerator();
+  let dataGenerator = new DataGenerator();
   try {
     let requestData = JSON.parse(request.body.dataMapStructure)
+    let authToken = request.body.token
     let responseData = []
-    await loopThroughAddedData(requestData, responseData, 500)
+    await loopThroughAddedData(requestData, responseData, 100, dataGenerator)
     // setInterval(() => {
-    respondWithData(responseData, 'Data successfully generated', response)
+    let payloadDetails = null
+    if (authToken !== null && authToken !== undefined && authToken !== '') {
+      try {
+        payloadDetails = await addIntoUserLog(responseData, authToken, request.body.name, 100);
+      } catch (error) {
+        throw error;
+      }
+    }
+    respondWithData({ payloadDetails: payloadDetails, payload: responseData }, 'Data successfully generated', response);
+    return
     // }, 9000)
   } catch (error) {
     // console.log(dataGenerator.unique_code)
@@ -23,13 +32,25 @@ router.post('/data', async (request, response) => {
   }
 })
 router.post('/uncustomized', async (request, response) => {
-  dataGenerator = new DataGenerator();
+  let dataGenerator = new DataGenerator();
   try {
     let requestData = JSON.parse(request.body.dataMapStructure)
     let responseData = []
-    await loopThroughAddedDataUncustomized(requestData, responseData, 500)
+    let authToken = request.body.token
+    await loopThroughAddedDataUncustomized(requestData, responseData, 100, dataGenerator)
     // setInterval(() => {
-      respondWithData(responseData, 'Data successfully generated', response)
+    let payloadDetails = null
+    console.log(authToken)
+    if (authToken !== null && authToken !== undefined && authToken !== '') {
+      console.log('Here I come', authToken !== null, authToken !== undefined, authToken !== '')
+      try {
+        payloadDetails = await addIntoUserLog(responseData, authToken, request.body.name, 100);
+      } catch (error) {
+        throw error;
+      }
+    }
+    respondWithData({ payloadDetails: payloadDetails, payload: responseData }, 'Data successfully generated', response);
+    return
     // }, 9000)
   } catch (error) {
     console.log(error)
@@ -37,26 +58,52 @@ router.post('/uncustomized', async (request, response) => {
     return
   }
 })
+
+async function addIntoUserLog(data, token, name, limit) {
+  let client = await pool();
+  let canOrderBy = []
+  let payloadId;
+  try {
+    Object.entries(data[0]).forEach(val => {
+      if (typeof val[1] !== 'object') {
+        canOrderBy.push(val[0])
+      }
+    })
+
+    let userId = await getUserIdFromToken(token);
+    if (userId === undefined) throw 'Invalid token';
+    let payloadData = JSON.stringify(data);
+    let deleteDate = cdate.addDaysToDate(new Date().toISOString(), 30);
+    let clientData = await client.query(`INSERT INTO user_payload(payload, jf_user_id, added_on, delete_after, can_order_by, payload_name, total_data) VALUES ('${payloadData}', ${userId}, '${new Date().toISOString()}', '${deleteDate}', '${canOrderBy.toString()}', '${name}', ${limit === undefined ? 100 : limit}) RETURNING payload_id`);
+
+    payloadId = clientData.rows[0].payload_id
+  } catch (error) {
+    throw error
+  } finally {
+    client.release(true)
+  }
+  return { payloadId: payloadId, sortdata: canOrderBy.toString() }
+}
 // This is for customized data as data will be return in obj form
-async function loopThroughAddedDataUncustomized (data, response, limit) {
+async function loopThroughAddedDataUncustomized(data, response, limit, dataGenerator) {
   for (let i = 0; i < limit; i++) {
-    dataGenerator.resetIndex
+    dataGenerator.resetIndex = i
     let dataToPush = Array.isArray(response) ? {} : response
-    await generateAndFillUncustomized(Object.entries(data), dataToPush)
+    await generateAndFillUncustomized(Object.entries(data), dataToPush, dataGenerator)
     if (Array.isArray(response)) response.push(dataToPush)
   }
 }
 
 // This is for customized data as data will be return in obj form
-async function loopThroughAddedData (data, response, limit) {
+async function loopThroughAddedData(data, response, limit, dataGenerator) {
   for (let i = 0; i < limit; i++) {
     let dataToPush = Array.isArray(response) ? {} : response
-    await generateAndFill(Object.entries(data), dataToPush)
+    await generateAndFill(Object.entries(data), dataToPush, dataGenerator)
     if (Array.isArray(response)) response.push(dataToPush)
   }
 }
 
-async function generateAndFillUncustomized (data, response) {
+async function generateAndFillUncustomized(data, response, dataGenerator) {
   try {
     for (let index = 0; index < data.length; index++) {
       switch (typeof data[index][1]) {
@@ -71,7 +118,7 @@ async function generateAndFillUncustomized (data, response) {
           if (Array.isArray(data[index][1])) {
             response[data[index][0]] = []
             if (typeof data[index][1][0] === 'object') {
-              loopThroughAddedDataUncustomized(data[index][1][0], response[data[index][0]], 10)
+              loopThroughAddedDataUncustomized(data[index][1][0], response[data[index][0]], dataGenerator.number(1, 10), dataGenerator)
             } else {
               for (let i = 0; i < 10; i++) {
                 if (data[index][1][0] === 'number' && data[index][1][0] === 'date_time') {
@@ -94,17 +141,17 @@ async function generateAndFillUncustomized (data, response) {
               }
             } else {
               response[data[index][0]] = {}
-              loopThroughAddedDataUncustomized(data[index][1], response[data[index][0]], 10)
+              loopThroughAddedDataUncustomized(data[index][1], response[data[index][0]], dataGenerator.number(1, 10), dataGenerator)
             }
           }
       }
     }
   } catch (error) {
-
+    throw error;
   }
 }
 // now lets fill data which have to be generated
-async function generateAndFill (data, response) {
+async function generateAndFill(data, response, dataGenerator) {
   try {
     for (let i = 0; i < data.length; i++) {
       if (data[i][1].value === undefined) return
@@ -112,9 +159,9 @@ async function generateAndFill (data, response) {
         if (data[i][1].mapTo === 'custom') {
           response[data[i][0]] = data[i][1].getDataFrom[dataGenerator.number(0, data[i][1].getDataFrom.length)]
         } else if (data[i][1].mapTo === 'phone_number') {
-          response[data[i][0]] =  `${data[i][1].prefix} ${dataGenerator[data[i][1].mapTo]}`
+          response[data[i][0]] = `${data[i][1].prefix} ${dataGenerator[data[i][1].mapTo]}`
         } else {
-          response[data[i][0]] =  dataGenerator[data[i][1].mapTo] === undefined ? '' : dataGenerator[data[i][1].mapTo]
+          response[data[i][0]] = dataGenerator[data[i][1].mapTo] === undefined ? '' : dataGenerator[data[i][1].mapTo]
         }
       } else if (data[i][1].value !== 'object' && data[i][1].value !== 'array' && data[i][1].value !== 'arrayOfObjects') {
         switch (data[i][1].value) {
@@ -135,14 +182,14 @@ async function generateAndFill (data, response) {
             break;
         }
       } else if (data[i][1].value === 'custom' || data[i][1].value === 'array') {
-          response[data[i][0]] = [dataGenerator[data[i][1].mapTo]]
+        response[data[i][0]] = [dataGenerator[data[i][1].mapTo]]
       } else if (data[i][1].value === 'object' || data[i][1].value === 'arrayOfObjects') {
         if (data[i][1].value === 'object') {
           response[data[i][0]] = {}
-          await loopThroughAddedData(data[i][1].children, response[data[i][0]], 1)
+          await loopThroughAddedData(data[i][1].children, response[data[i][0]], 1, dataGenerator)
         } else {
           response[data[i][0]] = []
-          await loopThroughAddedData(data[i][1].children[0], response[data[i][0]], parseInt(data[i][1].len) === NaN ? 1 : parseInt(data[i][1].len))
+          await loopThroughAddedData(data[i][1].children[0], response[data[i][0]], parseInt(data[i][1].len) === NaN ? 1 : parseInt(data[i][1].len), dataGenerator)
         }
       }
     }

@@ -9,7 +9,7 @@ const db = `${POSTGRES_URI}`;
 async function connectToDatabase () {
   const pool = new Pool({
     connectionString: db,
-  })
+  });
   const client = await pool.connect();
   return client;
 };
