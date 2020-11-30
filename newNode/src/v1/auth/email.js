@@ -75,7 +75,7 @@ export function returnHtmlForEmail (token, email, date) {
           <br>
           Please confirm that <b>${email}</b> is your e-mail address by clicking on the button below
         </p>
-        <a href="http://localhost:8080/#/emailverified?from=signup&id=${email}&token=${token}" style="padding:15px;margin:40px 0px 0px;background:rgb(13, 212, 169);border: none;color: white;width:500px;display: block;text-align:center;text-decoration: none;font-size:large;">VERIFY</a>
+        <a href="http://localhost:8080/#/emailverified/${token}" style="padding:15px;margin:40px 0px 0px;background:rgb(13, 212, 169);border: none;color: white;width:500px;display: block;text-align:center;text-decoration: none;font-size:large;">VERIFY</a>
         <p style="font-family: system-ui;font-size: 1rem;text-align: left;">Valid till 48hrs</p>
         </div>
       </div>

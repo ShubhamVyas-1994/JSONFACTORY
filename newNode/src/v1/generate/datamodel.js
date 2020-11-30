@@ -27,7 +27,18 @@ class DataGenerator {
       return Math.floor(randomNumber * 100)
     }
   }
-  
+  float(min, max) {
+    let randomNumber = Math.random()
+    if (max > 0 && min > 0) {
+      return (randomNumber * (max - min) + min).toFixed(2)
+    } else if (min > 0 && max === 0) {
+      return (randomNumber * min + min).toFixed(2)
+    } else if (max > 0 && min === 0) {
+      return (randomNumber * max).toFixed(2)
+    } else {
+      return (randomNumber * 100).toFixed(2)
+    }
+  }
   get unique_id() {
     return Math.round(new Date().getMilliseconds() * this.number(1, 100))
   }
@@ -86,11 +97,11 @@ class DataGenerator {
     return DataStore.industryType[this.number(0, DataStore.industryType.length)]
   }
   // return phone labels
-  get phone_type() {
+  get phone_label() {
     return DataStore.phoneType[this.number(0, DataStore.phoneType.length)]
   }
   // returns email labels
-  get email_type() {
+  get email_label() {
     return DataStore.emailType[this.number(0, DataStore.emailType.length)]
   }
   // returns true or false
@@ -113,7 +124,7 @@ class DataGenerator {
     return DataStore.userList[this.userIndex].middle_name
   }
   get email_address() {
-    return DataStore.userList[this.userIndex].email_address
+    return `${DataStore.userList[this.userIndex].first_name.toLowerCase()}${DataStore.userList[this.userIndex].last_name.toLowerCase()}${this.number(100, 999)}@gmail.com`
   }
   get full_name() {
     return DataStore.userList[this.userIndex].full_name

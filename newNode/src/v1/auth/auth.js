@@ -6,6 +6,7 @@ import {generateAuthToken} from '../../utils/common';
 import {sendEmail} from '../../utils/email';
 import CDate from '../generate/cdate';
 import {resendEmail, verifyEmail, returnHtmlForEmail} from './email';
+import {checkForAnswer, getQuestionForReset, resetPassword} from './resetpassword'
 
 router.post('/login', async (request, res) => {
   let client = await pool();
@@ -79,6 +80,11 @@ router.post('/signup', async (request, response) => {
   }
 })
 
+router.post('/reset/question', getQuestionForReset)
+
+router.post('/reset/verify', checkForAnswer)
+
+router.post('/reset/password', resetPassword)
 router.post('/verify/email', verifyEmail)
 
 router.post('/resend/email', resendEmail)

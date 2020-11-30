@@ -4,12 +4,12 @@ const { Pool, Client } = require('pg')
 const { POSTGRES_URI } = config;
 
 const db = `${POSTGRES_URI}`;
+const pool = new Pool({
+  connectionString: db,
+});
 
 // Sending client connect
 async function connectToDatabase () {
-  const pool = new Pool({
-    connectionString: db,
-  });
   const client = await pool.connect();
   return client;
 };
